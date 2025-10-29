@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//criando uma tabela
+model transaction {
+  id            String                   @id @default(uuid()) //registro único que não pode se repetir, uuid é um formato de id aleatório
+  name          String
+  type          TransactionType
+  amount        Decimal                  @db.Decimal(10, 2) //o decimal é mais preciso que o float, terei até 10 dígitos antes da vírgula e até 2 dígitos depois da vírgula
+  category      TransactionCategory
+  paymentMethod TransactionPaymentMethod
+  date          DateTime
+  createdAt     DateTime                 @default(now()) //quando criar o registro. DateTime pega o dia e a data
+  updatedAt     DateTime                 @updatedAt
+}
+
+//criando um enum, enum serve para representar um campo que só pode assumir valores pré-definidos.
+enum TransactionType {
+  DEPOSIT //depósito, um ganho
+  EXPENSE //gasto
+  INVESTIMENT //investimento 
+}
+
+enum TransactionCategory {
+  HOUSING
+  TRANSPORTATION
+  FOOD
+  ENTERTAINMENT
+  HEALTH
+  UTILITY
+  SALARY
+  EDUCATION
+  OTHER
+}
+
+enum TransactionPaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  BANK_SLIP
+  CASH
+  PIX
+  OTHER
+}
